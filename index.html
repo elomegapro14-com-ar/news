@@ -1,0 +1,81 @@
+<!D<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subir Fotos y Videos</title>
+<style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    h1 { text-align: center; }
+    form { margin-bottom: 30px; }
+    .preview-item { margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 8px; }
+    video, img { max-width: 100%; height: auto; display: block; margin-top: 5px; border-radius: 5px; }
+</style>
+</head>
+<body>
+
+<h1>Subir Fotos o Videos</h1>
+
+<form id="uploadForm">
+    <label for="file">Selecciona un archivo (foto/video):</label><br>
+    <input type="file" id="file" accept="image/*,video/*" required><br><br>
+
+    <label for="title">Título:</label><br>
+    <input type="text" id="title" required><br><br>
+
+    <label for="description">Descripción:</label><br>
+    <textarea id="description" rows="3" required></textarea><br><br>
+
+    <button type="submit">Agregar</button>
+</form>
+
+<h2>Archivos Subidos</h2>
+<div id="previewContainer"></div>
+
+<script>
+const form = document.getElementById('uploadForm');
+const previewContainer = document.getElementById('previewContainer');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const fileInput = document.getElementById('file');
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const div = document.createElement('div');
+        div.className = 'preview-item';
+
+        const h3 = document.createElement('h3');
+        h3.textContent = title;
+        const p = document.createElement('p');
+        p.textContent = description;
+
+        div.appendChild(h3);
+        div.appendChild(p);
+
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            div.appendChild(img);
+        } else if (file.type.startsWith('video/')) {
+            const video = document.createElement('video');
+            video.src = event.target.result;
+            video.controls = true;
+            div.appendChild(video);
+        }
+
+        previewContainer.appendChild(div);
+
+        form.reset();
+    };
+    reader.readAsDataURL(file);
+});
+</script>
+
+</body>
+</html>
